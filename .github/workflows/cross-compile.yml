@@ -22,7 +22,7 @@ jobs:
         wget https://download.samba.org/pub/talloc/talloc-2.3.3.tar.gz
         tar -zxvf talloc-2.3.3.tar.gz
         cd talloc-2.3.3
-        ./configure CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
+        ./configure --cross-compile --disable-python --without-gettext --disable-rpath CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
         make CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
         make install
     - name: Build PRoot

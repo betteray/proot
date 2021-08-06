@@ -18,20 +18,34 @@ jobs:
       with:
         ndk-version: r21e
     - name: Build Talloc
+      env:
+        NDK_TOOLCHAINS: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin
       run: |
         wget https://download.samba.org/pub/talloc/talloc-2.3.3.tar.gz
         tar -zxvf talloc-2.3.3.tar.gz
         cd talloc-2.3.3
-        ./configure --cross-compile --disable-python --without-gettext --disable-rpath CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
-        make CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
-        make install
+        CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang \
+          CPP=$NDK_TOOLCHAINS/aarch64-linux-android21-clang++ \
+          AR=$NDK_TOOLCHAINS/aarch64-linux-android-ar \
+          LD=$NDK_TOOLCHAINS/aarch64-linux-android-ld \
+          STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip \
+          OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy \
+          OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump \
+          ./configure --disable-rpath \
+            --disable-python \
+            --cross-compile \
+            --cross-answers=../cross-answers.txt
     - name: Build PRoot
       env:
         NDK_TOOLCHAINS: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin
       run: |
         mkdir build
         cd build
-        make -f ../src/GNUmakefile V=1 CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
+        CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang \
+          STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip \
+          OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy \
+          OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump \
+          make -f ../src/GNUmakefile V=1
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:

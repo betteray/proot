@@ -17,13 +17,21 @@ jobs:
       id: setup-ndk
       with:
         ndk-version: r21e
-    - name: make
+    - name: Build Talloc
+      run: |
+        wget https://download.samba.org/pub/talloc/talloc-2.3.3.tar.gz
+        tar -zxvf talloc-2.3.3.tar.gz
+        cd talloc-2.3.3
+        ./configure CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
+        make CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
+        make install
+    - name: Build PRoot
       env:
         NDK_TOOLCHAINS: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin
       run: |
         mkdir build
         cd build
-        make -f ../src/GNUmakefile CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
+        make -f ../src/GNUmakefile V=1 CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:

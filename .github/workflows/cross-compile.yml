@@ -42,17 +42,16 @@ jobs:
       env:
         NDK_TOOLCHAINS: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin
       run: |
-        mkdir build
-        cd build
+        cd src
         CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang \
           STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip \
           OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy \
           OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump \
           CFLAGS=-I../talloc-2.3.3 \
           LDFLAGS=-L../talloc-2.3.3/bin/default \
-          make -f ../src/GNUmakefile V=1
+          make -f V=1
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
         name: proot
-        path: ./build
+        path: ./src

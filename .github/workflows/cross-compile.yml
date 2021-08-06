@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ action ]
+  pull_request:
+    branches: [ action ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r21e
+    - name: make
+      env:
+        NDK_TOOLCHAINS: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin
+      run: |
+        mkdir build
+        cd build
+        make -f ../src/GNUmakefile CC=$NDK_TOOLCHAINS/aarch64-linux-android21-clang STRIP=$NDK_TOOLCHAINS/aarch64-linux-android-strip OBJCOPY=$NDK_TOOLCHAINS/aarch64-linux-android-objcopy OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: proot
+        path: ./build

@@ -35,6 +35,7 @@ jobs:
             --disable-python \
             --cross-compile \
             --cross-answers=../cross-answers.txt
+        make && make install
     - name: Build PRoot
       env:
         NDK_TOOLCHAINS: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin

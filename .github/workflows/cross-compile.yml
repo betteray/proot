@@ -49,7 +49,7 @@ jobs:
           OBJDUMP=$NDK_TOOLCHAINS/aarch64-linux-android-objdump \
           CFLAGS=-I../talloc-2.3.3 \
           LDFLAGS=-L../talloc-2.3.3/bin/default \
-          make -f V=1
+          make V=1
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:

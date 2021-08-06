@@ -35,6 +35,8 @@ jobs:
             --disable-python \
             --cross-compile \
             --cross-answers=../cross-answers.txt
+        rm -rf lib/replace/wscript
+        cp ../replace_wscript lib/replace/wscript
         make && make install
     - name: Build PRoot
       env:
